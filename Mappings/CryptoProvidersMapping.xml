@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mappings>
+    <mapping alias="RSA" type="CryptoLibrary.CryptoProviders.RsaCryptoProvider" />
+    <mapping alias="SHA" type="CryptoLibrary.CryptoProviders.ShaCryptoProvider" />
+</mappings>
+    
