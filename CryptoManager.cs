@@ -12,13 +12,18 @@ namespace CryptoLibrary
         }
 
         public string Encrypt(string input, string cryptoAlias)
-        {
-            return _providerFactory.GetCryptoProvider(cryptoAlias).Encrypt(input);
+        {            
+            return _providerFactory.GetCryptoProvider(cryptoAlias, GetPrivateKey()).Encrypt(input);
         }
 
         public string Decrypt(string input, string cryptoAlias)
         {
-            return _providerFactory.GetCryptoProvider(cryptoAlias).Decrypt(input);
+            return _providerFactory.GetCryptoProvider(cryptoAlias, GetPrivateKey()).Decrypt(input);
+        }
+
+        private string GetPrivateKey()
+        {
+            return "pk1";
         }
     }
 }

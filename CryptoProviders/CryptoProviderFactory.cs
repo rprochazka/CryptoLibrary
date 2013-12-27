@@ -15,20 +15,20 @@ namespace CryptoLibrary.CryptoProviders
         /// <summary>
         /// mappings betweenn cryptoAliases and the corresponding implementors in the form of delegated
         /// </summary>
-        private readonly Dictionary<string, Func<ICryptoProvider>> _cryptoProvidersMapping =
-            new Dictionary<string, Func<ICryptoProvider>>();
+        private readonly Dictionary<string, Func<string, ICryptoProvider>> _cryptoProvidersMapping =
+            new Dictionary<string, Func<string, ICryptoProvider>>();
  
         public CryptoProviderFactory()
         {
             InitCryptoProvidersMapping();
         }        
 
-        public ICryptoProvider GetCryptoProvider(string cryptoAlias)
+        public ICryptoProvider GetCryptoProvider(string cryptoAlias, string privateKey)
         {
-            Func<ICryptoProvider> cryptoProvider;
+            Func<string, ICryptoProvider> cryptoProvider;
             if (_cryptoProvidersMapping.TryGetValue(cryptoAlias, out cryptoProvider))
             {
-                return cryptoProvider.Invoke();
+                return cryptoProvider.Invoke(privateKey);
             }
 
             throw new Exception("Unable to find eligible CryptoProvider");
@@ -78,7 +78,7 @@ namespace CryptoLibrary.CryptoProviders
         /// </param>
         /// <param name="methodName"></param>
         /// <returns></returns>
-        private Func<ICryptoProvider> CreateMethodDelegate(string className, string methodName)
+        private Func<string, ICryptoProvider> CreateMethodDelegate(string className, string methodName)
         {
             // get the type (several ways exist, this is an eays one)
             //Type type = Type.GetType("CryptoLibrary.CryptoProviders." + className);
@@ -89,9 +89,9 @@ namespace CryptoLibrary.CryptoProviders
             {
                 MethodInfo mi = type.GetMethod(methodName);
 
-                // the "magic", turn it into a delegate
+                // the "magic", turn it into a delegate                
                 var createInstanceDelegate =
-                    (Func<ICryptoProvider>) Delegate.CreateDelegate(typeof (Func<ICryptoProvider>), mi);
+                    (Func<string, ICryptoProvider>) Delegate.CreateDelegate(typeof (Func<string, ICryptoProvider>), null, mi);
 
                 return createInstanceDelegate;
             }
